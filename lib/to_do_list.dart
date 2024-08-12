@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:to_do_list_app/add_list.dart';
+import 'models/list_container_model.dart';
 
 class ToDoList extends StatefulWidget {
   const ToDoList({super.key});
@@ -17,6 +18,8 @@ class _ToDoListState extends State<ToDoList> {
       _selected = newSelection;
     });
   }
+
+  Set<String> exmapleToDos = {'page1', 'page2', 'others'};
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +90,13 @@ class _ToDoListState extends State<ToDoList> {
                   ),
                 ),
               ),
-              // Add your ListView here
               Expanded(
-                child: ListView(),
+                child: ListView(
+                  padding: const EdgeInsets.all(8.0),
+                  children: [
+                    
+                  ],
+                ),
               ),
             ],
           ),
