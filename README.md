@@ -1,20 +1,12 @@
 <<<<<<< HEAD
-# to_do_list_app
+# To-Do List Application
 
-A new Flutter project.
+My second flutter project.
 
-## Getting Started
+Consists of a UI that allows the user to create a new to-do list, name it, add a label (Personal, work, finance, other), and have the ability to pin a lit.
 
-This project is a starting point for a Flutter application.
+Created: Saturday, August 10, 2024.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-=======
-# To_Do_List_App
->>>>>>> 397083942af1c2574d6c60391ebe1530fb1f0e49
+Future features:
+1. Add search function to search for lists based on its name.
