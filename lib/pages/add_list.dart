@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:to_do_list_app/components/single_task_widget.dart';
+import 'package:to_do_list_app/models/list_container_model.dart';
 
 class AddList extends StatefulWidget {
-  const AddList({super.key});
+  final void Function(ListContainer) addList;
+  const AddList({super.key, required this.addList});
 
   @override
   State<AddList> createState() => _AddListStates();
@@ -18,9 +21,11 @@ class _AddListStates extends State<AddList> {
   }
 
   final TextEditingController textEditingController = TextEditingController();
+  final List<TextEditingController> controllers = [];
+  final List<SingleTask> singleTaskLists = [];
   String titleText = '';
 
-  bool? isChecked = false;
+  List<Widget> tasks = [];
 
   @override
   Widget build(BuildContext context) {
@@ -45,18 +50,19 @@ class _AddListStates extends State<AddList> {
                     : const WidgetStatePropertyAll(Colors.black),
                 shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                 ),
               ),
             ),
           )
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            TextField(
               controller: textEditingController,
               decoration: const InputDecoration(
                 hintText: 'Title',
@@ -79,45 +85,53 @@ class _AddListStates extends State<AddList> {
               },
               keyboardType: TextInputType.text,
             ),
-          ),
-          Expanded(
-            child: ListView(
+            ...tasks,
+            Row(
               children: [
-                CheckboxListTile(
-                  title: TextField(
-                    decoration: const InputDecoration(
-                      hintText: "To-Do",
-                      hintStyle: TextStyle(
-                        color: Colors.black38,
-                      ),
-                      border: InputBorder.none,
-                    ),
-                    style: TextStyle(
-                      color: Colors.black,
-                      decoration: isChecked!
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none,
-                    ),
-                  ),
-                  value: isChecked,
-                  onChanged: (newBool) {
+                IconButton(
+                  onPressed: () {
                     setState(() {
-                      isChecked = newBool;
-                      const TextStyle(
-                        decoration: TextDecoration.lineThrough
-                      );
+                      SingleTask singleTask = SingleTask(title: '');
+                      singleTaskLists.add(singleTask);
+                      final TextEditingController controller =
+                          TextEditingController();
+                      controllers.add(controller);
+                      tasks.add(SingleTaskWidget(
+                        controller: controller,
+                        singleTask: singleTask,
+                      ));
                     });
                   },
-                  activeColor: Colors.black,
-                  controlAffinity: ListTileControlAffinity.leading,
+                  icon: const FaIcon(FontAwesomeIcons.squarePlus),
+                  color: Colors.black,
+                ),
+                const Text(
+                  "To-Do",
+                  style: TextStyle(color: Colors.black38),
                 ),
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: TextButton(
-        onPressed: () {},
+        onPressed: () {
+          if (singleTaskLists.isNotEmpty) {
+            for (SingleTask s in singleTaskLists) {
+              if (s.title.isEmpty) {
+                debugPrint("title is empty.");
+                return;
+              }
+              debugPrint(s.toString());
+            }
+            ListContainer listContainer = ListContainer(
+                title: textEditingController.text,
+                toDos: singleTaskLists,
+                pinned: _isPinnedPressed);
+            widget.addList(listContainer);
+            Navigator.pop(context);
+          }
+        },
         style: const ButtonStyle(
             backgroundColor: WidgetStatePropertyAll(Colors.black),
             foregroundColor: WidgetStatePropertyAll(Colors.white),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:to_do_list_app/add_list.dart';
-import 'models/list_container_model.dart';
+import 'package:to_do_list_app/pages/add_list.dart';
+import '../models/list_container_model.dart';
 
 class ToDoList extends StatefulWidget {
   const ToDoList({super.key});
@@ -17,6 +17,20 @@ class _ToDoListState extends State<ToDoList> {
     setState(() {
       _selected = newSelection;
     });
+  }
+
+  List<ListContainer> listContainer = [];
+  List<ListContainer> pListContainer = [];
+  List<ListContainer> upListContainer = [];
+
+  void addList(ListContainer ls) {
+    listContainer.add(ls);
+    if (ls.pinned) {
+      pListContainer.add(ls);
+    } else {
+      upListContainer.add(ls);
+    }
+    debugPrint(listContainer.length.toString());
   }
 
   Set<String> exmapleToDos = {'page1', 'page2', 'others'};
@@ -93,9 +107,7 @@ class _ToDoListState extends State<ToDoList> {
               Expanded(
                 child: ListView(
                   padding: const EdgeInsets.all(8.0),
-                  children: [
-                    
-                  ],
+                  children: [],
                 ),
               ),
             ],
@@ -104,8 +116,12 @@ class _ToDoListState extends State<ToDoList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const AddList()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddList(
+                        addList: addList,
+                      )));
         },
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
