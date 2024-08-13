@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:to_do_list_app/pages/add_list.dart';
 import '../models/list_container_model.dart';
+import '../components/list_container_widget.dart';
 
 class ToDoList extends StatefulWidget {
   const ToDoList({super.key});
-
   @override
   State<ToDoList> createState() => _ToDoListState();
 }
@@ -19,26 +19,26 @@ class _ToDoListState extends State<ToDoList> {
     });
   }
 
-  List<ListContainer> listContainer = [];
-  List<ListContainer> pListContainer = [];
-  List<ListContainer> upListContainer = [];
+  List<Widget> allLists = [];
+  List<Widget> pinnedLists = [];
 
   void addList(ListContainer ls) {
-    listContainer.add(ls);
-    if (ls.pinned) {
-      pListContainer.add(ls);
-    } else {
-      upListContainer.add(ls);
-    }
-    debugPrint(listContainer.length.toString());
-  }
+    ListContainerWidget newList = ListContainerWidget(
+        pinned: ls.pinned, listTitle: ls.title, tasksList: ls.toDos);
 
-  Set<String> exmapleToDos = {'page1', 'page2', 'others'};
+    allLists.add(newList);
+    if (ls.pinned) {
+      pinnedLists.add(newList);
+    }
+    debugPrint(ls.toString());
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         leading: IconButton(
           onPressed: () {},
           icon: const FaIcon(FontAwesomeIcons.listCheck),
@@ -105,9 +105,15 @@ class _ToDoListState extends State<ToDoList> {
                 ),
               ),
               Expanded(
-                child: ListView(
-                  padding: const EdgeInsets.all(8.0),
-                  children: [],
+                child: ListView.builder(
+                  itemCount:
+                      (_selected.contains("All Lists") ? allLists : pinnedLists)
+                          .length,
+                  itemBuilder: (context, index) {
+                    return (_selected.contains("All Lists")
+                        ? allLists
+                        : pinnedLists)[index];
+                  },
                 ),
               ),
             ],
@@ -117,11 +123,13 @@ class _ToDoListState extends State<ToDoList> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AddList(
-                        addList: addList,
-                      )));
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddList(
+                addList: addList,
+              ),
+            ),
+          );
         },
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,

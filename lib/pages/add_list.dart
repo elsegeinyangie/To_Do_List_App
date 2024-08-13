@@ -78,38 +78,49 @@ class _AddListStates extends State<AddList> {
                 fontSize: 30.0,
                 color: Colors.black,
               ),
-              onSubmitted: (String value) {
+              onChanged: (String value) {
                 setState(() {
-                  titleText = textEditingController.text;
+                  textEditingController.text;
                 });
               },
               keyboardType: TextInputType.text,
             ),
             ...tasks,
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      SingleTask singleTask = SingleTask(title: '');
-                      singleTaskLists.add(singleTask);
-                      final TextEditingController controller =
-                          TextEditingController();
-                      controllers.add(controller);
-                      tasks.add(SingleTaskWidget(
-                        controller: controller,
-                        singleTask: singleTask,
-                      ));
-                    });
-                  },
-                  icon: const FaIcon(FontAwesomeIcons.squarePlus),
-                  color: Colors.black,
+            InkWell(
+              splashColor: Colors.transparent,
+              onTap: () {
+                setState(() {
+                  SingleTask singleTask = SingleTask(title: '');
+                  singleTaskLists.add(singleTask);
+                  final TextEditingController controller =
+                      TextEditingController();
+                  controllers.add(controller);
+                  tasks.add(
+                    SingleTaskWidget(
+                      controller: controller,
+                      singleTask: singleTask,
+                    ),
+                  );
+                });
+              },
+              child: const Padding(
+                padding: EdgeInsets.only(left: 15.0, top: 8),
+                child: Row(
+                  children: [
+                    FaIcon(FontAwesomeIcons.squarePlus, color: Colors.black),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      "To-Do",
+                      style: TextStyle(
+                          color: Colors.black38,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16),
+                    ),
+                  ],
                 ),
-                const Text(
-                  "To-Do",
-                  style: TextStyle(color: Colors.black38),
-                ),
-              ],
+              ),
             ),
           ],
         ),

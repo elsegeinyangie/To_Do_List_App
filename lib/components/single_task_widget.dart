@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/list_container_model.dart';
 
+/*
+  - each task (to-do) has a controller (takes control and updates text changes),
+  - a singleTask object (to hold its data for each task (title, checked/unchecked))
+*/
+
 class SingleTaskWidget extends StatefulWidget {
   final TextEditingController controller;
   final SingleTask singleTask;
@@ -16,36 +21,42 @@ class _SingleTaskWidgetState extends State<SingleTaskWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return CheckboxListTile(
-      title: TextField(
-        controller: widget.controller,
-        decoration: const InputDecoration(
-          hintText: "To-Do",
-          hintStyle: TextStyle(
-            color: Colors.black38,
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Checkbox(
+          value: isChecked,
+          onChanged: (newBool) {
+            setState(() {
+              isChecked = newBool ?? false;
+              widget.singleTask.setIsChecked(isChecked);
+            });
+          },
+          activeColor: Colors.black,
+        ),
+        Expanded(
+          child: TextField(
+            controller: widget.controller,
+            decoration: const InputDecoration(
+              hintText: "To-Do",
+              hintStyle: TextStyle(
+                color: Colors.black38,
+              ),
+              border: InputBorder.none,
+              contentPadding:
+                  EdgeInsets.zero, // Removes padding inside the TextField
+            ),
+            style: TextStyle(
+              color: Colors.black,
+              decoration:
+                  isChecked ? TextDecoration.lineThrough : TextDecoration.none,
+            ),
+            onChanged: (title) {
+              widget.singleTask.setTitle(title);
+            },
           ),
-          border: InputBorder.none,
         ),
-        style: TextStyle(
-          color: Colors.black,
-          decoration:
-              isChecked! ? TextDecoration.lineThrough : TextDecoration.none,
-        ),
-        onChanged: (title) {
-          widget.singleTask.setTitle(title);
-        },
-      ),
-      value: isChecked,
-      onChanged: (newBool) {
-        setState(() {
-          isChecked = newBool ?? false;
-          widget.singleTask.setIsChecked(isChecked);
-          const TextStyle(decoration: TextDecoration.lineThrough);
-        });
-      },
-      activeColor: Colors.black,
-      controlAffinity: ListTileControlAffinity.leading,
-      contentPadding: EdgeInsets.zero,
+      ],
     );
   }
 }

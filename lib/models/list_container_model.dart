@@ -5,6 +5,11 @@ class ListContainer {
 
   const ListContainer(
       {this.pinned = false, required this.title, required this.toDos});
+
+  @override
+  String toString() {
+    return 'List Title: $title, Pinned: $pinned, Tasks:${toDos.toString()}';
+  }
 }
 
 class SingleTask {
@@ -15,7 +20,7 @@ class SingleTask {
 
   @override
   String toString() {
-    return "{title: $title , isChecked: $isChecked}";
+    return 'task: $title, checked: $isChecked';
   }
 
   void setTitle(String title) {
