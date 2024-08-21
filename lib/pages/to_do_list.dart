@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:to_do_list_app/pages/add_list.dart';
-import '../models/list_container_model.dart';
+import 'package:to_do_list_app/cubit/list_cubit.dart';
+import 'add_list_page.dart';
 import '../components/list_container_widget.dart';
 
 class ToDoList extends StatefulWidget {
@@ -19,20 +20,7 @@ class _ToDoListState extends State<ToDoList> {
     });
   }
 
-  List<Widget> allLists = [];
-  List<Widget> pinnedLists = [];
 
-  void addList(ListContainer ls) {
-    ListContainerWidget newList = ListContainerWidget(
-        pinned: ls.pinned, listTitle: ls.title, tasksList: ls.toDos);
-
-    allLists.add(newList);
-    if (ls.pinned) {
-      pinnedLists.add(newList);
-    }
-    debugPrint(ls.toString());
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,16 +93,23 @@ class _ToDoListState extends State<ToDoList> {
                 ),
               ),
               Expanded(
-                child: ListView.builder(
-                  itemCount:
-                      (_selected.contains("All Lists") ? allLists : pinnedLists)
-                          .length,
-                  itemBuilder: (context, index) {
-                    return (_selected.contains("All Lists")
-                        ? allLists
-                        : pinnedLists)[index];
-                  },
-                ),
+                child: BlocBuilder<ListCubit, ListState>(
+                    builder: (context, state) {
+                  final listsToShow = _selected.contains("All Lists")
+                      ? state.allLists
+                      : state.pinnedLists;
+
+                  return ListView.builder(
+                    itemCount: listsToShow.length,
+                    itemBuilder: (context, index) {
+                      return ListContainerWidget(
+                        pinned: listsToShow[index].pinned,
+                        listTitle: listsToShow[index].title,
+                        tasksList: listsToShow[index].toDos,
+                      );
+                    },
+                  );
+                }),
               ),
             ],
           ),
@@ -125,8 +120,10 @@ class _ToDoListState extends State<ToDoList> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddList(
-                addList: addList,
+              builder: (context) => AddListPage(
+                addList: (list) {
+                  context.read<ListCubit>().addList(list);
+                },
               ),
             ),
           );
